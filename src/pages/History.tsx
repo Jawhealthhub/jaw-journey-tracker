@@ -3,7 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Activity, Brain, Briefcase } from 'lucide-react';
+import { Calendar, Activity, Brain, Briefcase, History as HistoryIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import BottomNavigation from '@/components/BottomNavigation';
 
@@ -85,7 +85,7 @@ const History = () => {
       <header className="bg-card border-b border-border sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-2">
-            <History className="w-6 h-6 text-primary" />
+            <HistoryIcon className="w-6 h-6 text-primary" />
             <h1 className="text-xl font-bold">Log History</h1>
           </div>
         </div>
