@@ -13,8 +13,9 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { Calendar, Plus, LogOut, Menu, TrendingUp } from 'lucide-react';
+import { Calendar, Plus, LogOut, Menu, TrendingUp, X, ShoppingCart } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import BottomNavigation from '@/components/BottomNavigation';
 
 const Home = () => {
   const { user, signOut } = useAuth();
@@ -32,6 +33,8 @@ const Home = () => {
   const [workType, setWorkType] = useState<string>('');
   const [painScore, setPainScore] = useState<number>(5);
   const [isLogging, setIsLogging] = useState(false);
+  const [logCount, setLogCount] = useState<number>(0);
+  const [showProductBanner, setShowProductBanner] = useState(false);
 
   // Preferences hooks
   const { preferences: foodPreferences, addPreference: addFood } = usePreferences('foods');
@@ -55,6 +58,37 @@ const Home = () => {
       navigate('/onboarding');
     }
   }, [user, onboardingStatus, onboardingLoading, navigate]);
+
+  useEffect(() => {
+    if (user) {
+      fetchLogCount();
+    }
+  }, [user]);
+
+  const fetchLogCount = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('daily_logs')
+        .select('id')
+        .eq('user_id', user.id);
+
+      if (error) {
+        console.error('Error fetching log count:', error);
+      } else {
+        setLogCount(data?.length || 0);
+      }
+    } catch (error) {
+      console.error('Error fetching log count:', error);
+    }
+  };
+
+  const checkForProductRecommendation = (stress: number, pain: number) => {
+    if (logCount >= 5 && stress >= 4 && pain >= 5) {
+      setShowProductBanner(true);
+    }
+  };
 
   const handleAddCustomItem = async (
     type: 'food' | 'medication' | 'exercise' | 'symptom',
@@ -101,6 +135,9 @@ const Home = () => {
         description: "Your daily log has been recorded.",
       });
 
+      // Check for product recommendation
+      checkForProductRecommendation(stressLevel, painScore);
+
       // Reset form
       setSelectedFoods([]);
       setSelectedMedications([]);
@@ -110,6 +147,9 @@ const Home = () => {
       setWorkDone(false);
       setWorkType('');
       setPainScore(5);
+      
+      // Update log count
+      setLogCount(prev => prev + 1);
     } catch (error) {
       console.error('Error saving log:', error);
       toast({
@@ -181,28 +221,56 @@ const Home = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-16">
       {/* Header */}
-      <header className="border-b bg-card">
+      <header className="bg-card border-b border-border sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Calendar className="w-6 h-6 text-primary" />
-              <h1 className="text-xl font-bold">TMJ Tracker</h1>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2">
+                <Calendar className="w-6 h-6 text-primary" />
+                <h1 className="text-xl font-bold">TMJ Tracker</h1>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Track the Inputs. Understand the Symptoms. Manage Your TMJ.
+              </p>
             </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={() => navigate('/insights')}>
-                <TrendingUp className="w-4 h-4 mr-2" />
-                Insights
+            <Button variant="outline" size="sm" onClick={signOut}>
+              <LogOut className="w-4 h-4 mr-2" />
+              Sign Out
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* Product Recommendation Banner */}
+      {showProductBanner && (
+        <div className="bg-primary/10 border-b border-primary/20 px-4 py-3">
+          <div className="container mx-auto flex items-center justify-between">
+            <div className="flex-1">
+              <p className="text-sm font-medium text-primary">
+                High stress and jaw pain detected. Try TMJ ComfortPlus—our calming, muscle-soothing formula designed for tense jaw days.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 ml-4">
+              <Button 
+                size="sm" 
+                onClick={() => window.open('https://jawhealthhub.com/products/tmj-comfortplus', '_blank')}
+              >
+                <ShoppingCart className="w-3 h-3 mr-1" />
+                Buy Now
               </Button>
-              <Button variant="outline" size="sm" onClick={signOut}>
-                <LogOut className="w-4 h-4 mr-2" />
-                Sign Out
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setShowProductBanner(false)}
+              >
+                <X className="w-3 h-3" />
               </Button>
             </div>
           </div>
         </div>
-      </header>
+      )}
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-6">
@@ -355,6 +423,8 @@ const Home = () => {
           </Card>
         </div>
       </main>
+      
+      <BottomNavigation />
     </div>
   );
 };

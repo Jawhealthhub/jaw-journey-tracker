@@ -8,6 +8,8 @@ import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import Onboarding from "./pages/Onboarding";
 import Insights from "./pages/Insights";
+import History from "./pages/History";
+import Trends from "./pages/Trends";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +26,8 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/insights" element={<Insights />} />
+            <Route path="/history" element={<History />} />
+            <Route path="/trends" element={<Trends />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
