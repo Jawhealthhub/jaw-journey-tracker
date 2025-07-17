@@ -14,7 +14,189 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      daily_logs: {
+        Row: {
+          date: string
+          exercises: string[] | null
+          foods: string[] | null
+          id: string
+          log_created_at: string
+          medications: string[] | null
+          pain_score: number | null
+          stress_level: number | null
+          symptoms: string[] | null
+          updated_at: string
+          user_id: string
+          work_done: boolean | null
+          work_type: string | null
+        }
+        Insert: {
+          date: string
+          exercises?: string[] | null
+          foods?: string[] | null
+          id?: string
+          log_created_at?: string
+          medications?: string[] | null
+          pain_score?: number | null
+          stress_level?: number | null
+          symptoms?: string[] | null
+          updated_at?: string
+          user_id: string
+          work_done?: boolean | null
+          work_type?: string | null
+        }
+        Update: {
+          date?: string
+          exercises?: string[] | null
+          foods?: string[] | null
+          id?: string
+          log_created_at?: string
+          medications?: string[] | null
+          pain_score?: number | null
+          stress_level?: number | null
+          symptoms?: string[] | null
+          updated_at?: string
+          user_id?: string
+          work_done?: boolean | null
+          work_type?: string | null
+        }
+        Relationships: []
+      }
+      default_preferences: {
+        Row: {
+          created_at: string
+          id: string
+          preference_type: Database["public"]["Enums"]["preference_type"]
+          preference_value: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          preference_type: Database["public"]["Enums"]["preference_type"]
+          preference_value: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          preference_type?: Database["public"]["Enums"]["preference_type"]
+          preference_value?: string
+        }
+        Relationships: []
+      }
+      user_onboarding: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          exercises_completed: boolean | null
+          foods_completed: boolean | null
+          id: string
+          medications_completed: boolean | null
+          onboarding_completed: boolean | null
+          symptoms_completed: boolean | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          exercises_completed?: boolean | null
+          foods_completed?: boolean | null
+          id?: string
+          medications_completed?: boolean | null
+          onboarding_completed?: boolean | null
+          symptoms_completed?: boolean | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          exercises_completed?: boolean | null
+          foods_completed?: boolean | null
+          id?: string
+          medications_completed?: boolean | null
+          onboarding_completed?: boolean | null
+          symptoms_completed?: boolean | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_preferences: {
+        Row: {
+          created_at: string
+          id: string
+          is_default: boolean | null
+          preference_type: Database["public"]["Enums"]["preference_type"]
+          preference_value: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_default?: boolean | null
+          preference_type: Database["public"]["Enums"]["preference_type"]
+          preference_value: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_default?: boolean | null
+          preference_type?: Database["public"]["Enums"]["preference_type"]
+          preference_value?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_subscription: {
+        Row: {
+          created_at: string
+          days_used: number | null
+          first_log_date: string | null
+          id: string
+          logs_count: number | null
+          stripe_customer_id: string | null
+          subscribed: boolean | null
+          subscription_end: string | null
+          subscription_tier: string | null
+          updated_at: string
+          upgrade_prompted: boolean | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          days_used?: number | null
+          first_log_date?: string | null
+          id?: string
+          logs_count?: number | null
+          stripe_customer_id?: string | null
+          subscribed?: boolean | null
+          subscription_end?: string | null
+          subscription_tier?: string | null
+          updated_at?: string
+          upgrade_prompted?: boolean | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          days_used?: number | null
+          first_log_date?: string | null
+          id?: string
+          logs_count?: number | null
+          stripe_customer_id?: string | null
+          subscribed?: boolean | null
+          subscription_end?: string | null
+          subscription_tier?: string | null
+          updated_at?: string
+          upgrade_prompted?: boolean | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +205,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      preference_type: "foods" | "medications" | "exercises" | "symptoms"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +332,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      preference_type: ["foods", "medications", "exercises", "symptoms"],
+    },
   },
 } as const
