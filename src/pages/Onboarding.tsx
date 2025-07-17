@@ -15,7 +15,11 @@ const Onboarding = () => {
   const [currentStep, setCurrentStep] = useState(0);
 
   useEffect(() => {
-    if (status?.onboarding_completed) {
+    // Only redirect if onboarding is completed AND we're not in demo mode
+    const urlParams = new URLSearchParams(window.location.search);
+    const isDemo = urlParams.get('demo') === 'true';
+    
+    if (status?.onboarding_completed && !isDemo) {
       navigate('/');
     }
   }, [status, navigate]);
@@ -49,24 +53,38 @@ const Onboarding = () => {
 
   const handleStepComplete = async (selectedItems: string[]) => {
     const step = steps[currentStep];
-    await updateOnboardingStep(step.key, true);
+    const urlParams = new URLSearchParams(window.location.search);
+    const isDemo = urlParams.get('demo') === 'true';
+    
+    if (!isDemo) {
+      await updateOnboardingStep(step.key, true);
+    }
     
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      await completeOnboarding();
+      if (!isDemo) {
+        await completeOnboarding();
+      }
       navigate('/');
     }
   };
 
   const handleSkip = async () => {
     const step = steps[currentStep];
-    await updateOnboardingStep(step.key, true);
+    const urlParams = new URLSearchParams(window.location.search);
+    const isDemo = urlParams.get('demo') === 'true';
+    
+    if (!isDemo) {
+      await updateOnboardingStep(step.key, true);
+    }
     
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      await completeOnboarding();
+      if (!isDemo) {
+        await completeOnboarding();
+      }
       navigate('/');
     }
   };
@@ -87,7 +105,11 @@ const Onboarding = () => {
     return null;
   }
 
-  if (status?.onboarding_completed) {
+  // Check if we're in demo mode
+  const urlParams = new URLSearchParams(window.location.search);
+  const isDemo = urlParams.get('demo') === 'true';
+  
+  if (status?.onboarding_completed && !isDemo) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Card className="w-full max-w-md">
@@ -112,6 +134,9 @@ const Onboarding = () => {
           <div className="text-center mb-4">
             <h1 className="text-2xl font-bold">TMJ Tracker Setup</h1>
             <p className="text-muted-foreground">Step {currentStep + 1} of {steps.length}</p>
+            {isDemo && (
+              <p className="text-xs text-orange-600 mt-1">Demo Mode - Changes won't be saved</p>
+            )}
           </div>
           <Progress value={((currentStep + 1) / steps.length) * 100} className="mb-4" />
           <div className="text-center text-sm text-muted-foreground">
