@@ -235,10 +235,15 @@ const Home = () => {
                 Track the Inputs. Understand the Symptoms. Manage Your TMJ.
               </p>
             </div>
-            <Button variant="outline" size="sm" onClick={signOut}>
-              <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={() => navigate('/onboarding')}>
+                View Onboarding
+              </Button>
+              <Button variant="outline" size="sm" onClick={signOut}>
+                <LogOut className="w-4 h-4 mr-2" />
+                Sign Out
+              </Button>
+            </div>
           </div>
         </div>
       </header>
